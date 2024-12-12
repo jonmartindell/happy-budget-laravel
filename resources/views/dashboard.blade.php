@@ -1,13 +1,11 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-
     <style>
         .category-rows:nth-child(even) {
-            background-color: #f1f1f1;
+            background-color: rgb(228 228 231);
+        }
+
+        svg {
+            display: inline;
         }
     </style>
 
@@ -17,11 +15,17 @@
         <div class="flex justify-center py-4">
             <h3 class="text-center text-2xl">
                 <a href="{{ route('dashboard.index', ['month' => $prior_month]) }}" class="text-gray-600">
-                    <span class="glyphicon glyphicon-chevron-left"></span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+
                 </a>
                 {{ $month }}
                 <a href="{{ route('dashboard.index', ['month' => $next_month]) }}" class="text-gray-600">
-                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+
                 </a>
             </h3>
         </div>
@@ -51,7 +55,11 @@
             </h6>
             <div class="w-16 text-center">
                 <a href="{{ route('transactions.create', ['category' => $category->id]) }}" class="bg-green-500 text-white px-2 py-1 rounded-full hover:bg-green-600">
-                    <i class="glyphicon glyphicon-plus"></i>
+
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+
                 </a>
             </div>
             @else
@@ -66,7 +74,9 @@
             </h6>
             <div class="w-16 text-center">
                 <a href="{{ route('transactions.create', ['category' => $category->id]) }}" class="bg-green-500 text-white px-2 py-1 rounded-full hover:bg-green-600">
-                    <i class="glyphicon glyphicon-plus"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
                 </a>
             </div>
             @endif
@@ -101,9 +111,13 @@
             </h6>
             <h6 class="w-16 text-center">
                 @if ($category->status($month) == 'warning')
-                <span class="text-warning glyphicon glyphicon-warning-sign" data-toggle="tooltip" title="{{ $category->statusReason($month) }}"></span>
+                <svg xmlns="http://www.w3.org/2000/svg" color="rgb(138, 109, 59)" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                    <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
+                </svg>
                 @elseif ($category->status($month) == 'danger')
-                <span class="text-danger glyphicon glyphicon-alert" data-toggle="tooltip" title="{{ $category->statusReason($month) }}"></span>
+                <svg xmlns="http://www.w3.org/2000/svg" color="rgb(169, 68, 66)" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                    <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
+                </svg>
                 @endif
             </h6>
             <h6 class="text-xs text-gray-500">
@@ -118,9 +132,13 @@
             </h6>
             <h6 class="w-16 text-center">
                 @if ($category->status($month) == 'warning')
-                <span class="text-warning glyphicon glyphicon-warning-sign" data-toggle="tooltip" title="{{ $category->statusReason($month) }}"></span>
+                <svg xmlns="http://www.w3.org/2000/svg" color="rgb(138, 109, 59)" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                    <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
+                </svg>
                 @elseif ($category->status($month) == 'danger')
-                <span class="text-danger glyphicon glyphicon-alert" data-toggle="tooltip" title="{{ $category->statusReason($month) }}"></span>
+                <svg xmlns="http://www.w3.org/2000/svg" color="rgb(169, 68, 66)" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                    <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
+                </svg>
                 @endif
             </h6>
             <h6 class="text-xs text-gray-500">
@@ -129,18 +147,13 @@
             @endif
             <div class="w-16 text-center">
                 <a href="{{ route('transactions.create', ['category' => $category->id]) }}" class="bg-green-500 text-white px-2 py-1 rounded-full hover:bg-green-600">
-                    <i class="glyphicon glyphicon-plus"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
                 </a>
             </div>
         </div>
         @endforeach
         @endforeach
     </div>
-
-    <script>
-        $(function() {
-            $('[data-toggle="tooltip"]').tooltip()
-        });
-    </script>
-
 </x-app-layout>
