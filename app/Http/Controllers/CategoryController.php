@@ -24,9 +24,9 @@ class CategoryController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
-        //
+        return view('categories.create');
     }
 
     /**
@@ -34,13 +34,23 @@ class CategoryController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'message' => 'required|string|max:255',
+        $request->merge([
+            'infrequent' => $request->input('infrequent', false),
+            'expense' => $request->input('expense', false)
         ]);
 
-        $request->user()->chirps()->create($validated);
+        $validated = $request->validate([
+            'heading' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'budget' => 'required',
+            'sort' => 'required',
+            'infrequent' => 'required',
+            'expense' => 'required'
+        ]);
 
-        return redirect(route('chirps.index'));
+        Category::create($validated);
+
+        return redirect(route('categories.index'));
     }
 
     /**
@@ -54,24 +64,42 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category)
+    public function edit(Category $category): View
     {
-        //
+        return view('categories.edit', ['category' => $category]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Category $category): RedirectResponse
     {
-        //
+        $request->merge([
+            'infrequent' => $request->input('infrequent', false),
+            'expense' => $request->input('expense', false)
+        ]);
+
+        $validated = $request->validate([
+            'heading' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'budget' => 'required',
+            'sort' => 'required',
+            'infrequent' => 'required',
+            'expense' => 'required'
+        ]);
+
+        $category->update($validated);
+
+        return redirect(route('categories.index'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Category $category): RedirectResponse
     {
         //
+        $category->delete();
+        return redirect(route('categories.index'));
     }
 }
