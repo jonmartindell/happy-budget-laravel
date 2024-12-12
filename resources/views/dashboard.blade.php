@@ -1,82 +1,69 @@
 <x-app-layout>
     <style>
         .category-rows:nth-child(even) {
-            background-color: rgb(228 228 231);
-        }
-
-        svg {
-            display: inline;
+            background-color: #f1f1f1;
         }
     </style>
 
-    <p id="notice" class="text-center text-lg text-blue-600">{{ session('notice') }}</p>
+    <p id="notice">{{ session('notice') }}</p>
 
-    <div class="container mx-auto px-4">
-        <div class="flex justify-center py-4">
-            <h3 class="text-center text-2xl">
-                <a href="{{ route('dashboard.index', ['month' => $prior_month]) }}" class="text-gray-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                    </svg>
-
+    <div class="container-fluid">
+        <div class="row">
+            <h3 class="col-xs-12 text-center">
+                @php
+                $prior_month = \Carbon\Carbon::parse($prior_month);
+                $next_month = \Carbon\Carbon::parse($next_month);
+                @endphp
+                <a href="{{ route('dashboard.index', ['month' => $prior_month->format('Y-m')]) }}">
+                    <span class="glyphicon glyphicon-chevron-left pull-left"></span>
                 </a>
                 {{ $month }}
-                <a href="{{ route('dashboard.index', ['month' => $next_month]) }}" class="text-gray-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                    </svg>
-
+                <a href="{{ route('dashboard.index', ['month' => $next_month->format('Y-m')]) }}">
+                    <span class="glyphicon glyphicon-chevron-right pull-right"></span>
                 </a>
             </h3>
         </div>
 
-        <div class="flex items-center space-x-4 py-2">
-            <h4 class="flex-1 text-lg">Income</h4>
-            <h6 class="text-xs text-gray-500">YTD</h6>
-            <h6 class="text-xs text-gray-500">Curr Mnth</h6>
-            <h6 class="w-16"></h6>
+        <div class="row">
+            <h4 class="col-xs-4">Income</h4>
+            <h6 class="col-xs-2 text-nowrap"><small>YTD</small></h6>
+            <h6 class="col-xs-3 text-nowrap"><small>Curr Mnth</small></h6>
+            <h6 class="col-xs-2"></h6>
         </div>
-
-        @foreach ($incomes as $heading => $categories)
-        <div class="flex items-center space-x-4 py-2">
-            <h4 class="text-lg">{{ $heading }}</h4>
+        @foreach($incomes as $heading => $categories)
+        <div class="row">
+            <h4 class="col-xs-12 text-nowrap">{{ $heading }}</h4>
         </div>
-        @foreach ($categories as $category)
-        <div class="flex items-center py-2 px-4 category-rows">
-            @if ($category->infrequent)
-            <h6 class="flex-1 text-sm text-nowrap">
-                <a href="{{ route('categories.show', $category) }}" class="text-blue-500">{{ Str::limit($category->name, 13) }}<sup>*</sup></a>
+        @foreach($categories as $category)
+        <div class="row category-rows">
+            @if($category->infrequent)
+            <h6 class="col-xs-4 text-nowrap">
+                <a href="{{ route('categories.show', $category->id) }}">{{ Str::limit($category->name, 13) }}<sup>*</sup></a>
             </h6>
-            <h6 class="text-xs text-gray-500">
-                <small> ${{ $category->spentToEom($month) }} /$ {{ $category->budget * 12 }} </small>
+            <h6 class="col-xs-2 text-nowrap">
+                <small>${{ number_format($category->spentToEom($month), 0) }} <small> /${{ number_format($category->budget * 12, 0) }}</small></small>
             </h6>
-            <h6 class="text-xs text-gray-500">
-                ${{ $category->spent($month) }}<small>/{{ $category->budget }}</small>
+            <h6 class="col-xs-3 text-nowrap">
+                ${{ number_format($category->spent($month), 0) }}<small>/${{ number_format($category->budget, 0) }}</small>
             </h6>
-            <div class="w-16 text-center">
-                <a href="{{ route('transactions.create', ['category' => $category->id]) }}" class="bg-green-500 text-white px-2 py-1 rounded-full hover:bg-green-600">
-
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-
+            <div class="col-xs-1">
+                <a href="{{ route('transactions.create', ['category' => $category->id]) }}" class="btn btn-success">
+                    <i class="glyphicon glyphicon-plus"></i>
                 </a>
             </div>
             @else
-            <h6 class="flex-1 text-sm">
-                <a href="{{ route('categories.show', $category) }}" class="text-blue-500">{{ $category->name }}</a>
+            <h6 class="col-xs-4 text-nowrap">
+                <a href="{{ route('categories.show', $category->id) }}">{{ $category->name }}</a>
             </h6>
-            <h6 class="text-xs text-gray-500">
-                <small>$ {{ $category->spentToEom($month) }}<small>/{{ $category->budgetToEom($month) }}</small></small>
+            <h6 class="col-xs-2 text-nowrap">
+                <small>${{ number_format($category->spentToEom($month), 0) }}<small> /${{ number_format($category->budgetToEom($month), 0) }}</small></small>
             </h6>
-            <h6 class="text-xs text-gray-500">
-                ${{ $category->spent($month) }}<small>/{{ $category->budget }}</small>
+            <h6 class="col-xs-3 text-nowrap">
+                ${{ number_format($category->spent($month), 0) }}<small>/${{ number_format($category->budget, 0) }}</small>
             </h6>
-            <div class="w-16 text-center">
-                <a href="{{ route('transactions.create', ['category' => $category->id]) }}" class="bg-green-500 text-white px-2 py-1 rounded-full hover:bg-green-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
+            <div class="col-xs-1">
+                <a href="{{ route('transactions.create', ['category' => $category->id]) }}" class="btn btn-success">
+                    <i class="glyphicon glyphicon-plus"></i>
                 </a>
             </div>
             @endif
@@ -84,76 +71,70 @@
         @endforeach
         @endforeach
 
-        <div class="my-4">
-            <hr class="border-t-2">
+        <div class="row">
+            <hr class="col-xs-12">
         </div>
 
-        <div class="flex items-center space-x-4 py-2">
-            <h4 class="flex-1 text-lg">Expenses</h4>
-            <h6 class="text-xs text-gray-500">YTD +/-</h6>
-            <h6 class="w-16"></h6>
-            <h6 class="text-xs text-gray-500">Remaining</h6>
-            <h6 class="w-16"></h6>
+        <div class="row">
+            <h4 class="col-xs-4">Expenses</h4>
+            <h6 class="col-xs-2 text-nowrap"><small>YTD +/-</small></h6>
+            <h6 class="col-xs-1"></h6>
+            <h6 class="col-xs-2 text-nowrap"><small>Remaining</small></h6>
+            <h6 class="col-xs-2"></h6>
         </div>
-
-        @foreach ($expenses as $heading => $categories)
-        <div class="flex items-center space-x-4 py-2">
-            <h4 class="text-lg">{{ $heading }}</h4>
+        @foreach($expenses as $heading => $categories)
+        <div class="row">
+            <h4 class="col-xs-12 text-nowrap">{{ $heading }}</h4>
         </div>
-        @foreach ($categories as $category)
-        <div class="flex items-center py-2 px-4 category-rows">
-            @if ($category->infrequent)
-            <h6 class="flex-1 text-sm text-nowrap">
-                <a href="{{ route('categories.show', $category) }}" class="text-blue-500">{{ Str::limit($category->name, 13) }}<sup>*</sup></a>
+        @foreach($categories as $category)
+        <div class="row category-rows">
+            @if($category->infrequent)
+            <h6 class="col-xs-4 text-nowrap">
+                <a href="{{ route('categories.show', $category->id) }}">{{ Str::limit($category->name, 13) }}<sup>*</sup></a>
             </h6>
-            <h6 class="text-xs text-{{ $category->status($month) }}-500">
-                ${{ $category->remainingForYear($month) }}<small> ({{ $category->yearlyPercentRemaining($month) }}% rem)</small>
+            <h6 class="col-xs-2 text-nowrap">
+                <small class="text-{{ $category->status($month) }}">
+                    ${{ number_format($category->remainingForYear($month), 0) }} <small>({{ number_format($category->yearlyPercentRemaining($month), 0) }}% rem)</small>
+                </small>
             </h6>
-            <h6 class="w-16 text-center">
-                @if ($category->status($month) == 'warning')
-                <svg xmlns="http://www.w3.org/2000/svg" color="rgb(138, 109, 59)" viewBox="0 0 20 20" fill="currentColor" class="size-5">
-                    <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
-                </svg>
-                @elseif ($category->status($month) == 'danger')
-                <svg xmlns="http://www.w3.org/2000/svg" color="rgb(169, 68, 66)" viewBox="0 0 20 20" fill="currentColor" class="size-5">
-                    <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
-                </svg>
+            <h6 class="col-xs-1">
+                @if($category->status($month) == 'warning')
+                <span class="text-warning glyphicon glyphicon-warning-sign" data-toggle="tooltip" title="{{ $category->statusReason($month) }}"></span>
+                @elseif($category->status($month) == 'danger')
+                <span class="text-danger glyphicon glyphicon-alert" data-toggle="tooltip" title="{{ $category->statusReason($month) }}"></span>
                 @endif
             </h6>
-            <h6 class="text-xs text-gray-500">
-                ${{ $category->budgetToEom($month) - $category->spentToEom($month) }}<small> saved</small>
+            <h6 class="col-xs-2 text-nowrap">
+                ${{ number_format($category->budgetToEom($month) - $category->spentToEom($month), 0) }}<small> saved</small>
             </h6>
             @else
-            <h6 class="flex-1 text-sm">
-                <a href="{{ route('categories.show', $category) }}" class="text-blue-500">{{ $category->name }}</a>
+            <h6 class="col-xs-4 text-nowrap">
+                <a href="{{ route('categories.show', $category->id) }}">{{ $category->name }}</a>
             </h6>
-            <h6 class="text-xs text-{{ $category->status($month) }}-500">
-                ${{ $category->budgetToSom($month) - $category->ytdSpent($month) }}
+            <h6 class="col-xs-2 text-nowrap">
+                <small class="text-{{ $category->status($month) }}">
+                    ${{ number_format($category->budgetToSom($month) - $category->ytdSpent($month), 0) }}
+                </small>
             </h6>
-            <h6 class="w-16 text-center">
-                @if ($category->status($month) == 'warning')
-                <svg xmlns="http://www.w3.org/2000/svg" color="rgb(138, 109, 59)" viewBox="0 0 20 20" fill="currentColor" class="size-5">
-                    <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
-                </svg>
-                @elseif ($category->status($month) == 'danger')
-                <svg xmlns="http://www.w3.org/2000/svg" color="rgb(169, 68, 66)" viewBox="0 0 20 20" fill="currentColor" class="size-5">
-                    <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
-                </svg>
+            <h6 class="col-xs-1">
+                @if($category->status($month) == 'warning')
+                <span class="text-warning glyphicon glyphicon-warning-sign" data-toggle="tooltip" title="{{ $category->statusReason($month) }}"></span>
+                @elseif($category->status($month) == 'danger')
+                <span class="text-danger glyphicon glyphicon-alert" data-toggle="tooltip" title="{{ $category->statusReason($month) }}"></span>
                 @endif
             </h6>
-            <h6 class="text-xs text-gray-500">
-                ${{ $category->remaining($month) }}<small>/{{ $category->budget }}</small>
+            <h6 class="col-xs-2 text-nowrap">
+                ${{ number_format($category->remaining($month), 0) }}<small>/${{ number_format($category->budget, 0) }}</small>
             </h6>
             @endif
-            <div class="w-16 text-center">
-                <a href="{{ route('transactions.create', ['category' => $category->id]) }}" class="bg-green-500 text-white px-2 py-1 rounded-full hover:bg-green-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
+            <div class="col-xs-1">
+                <a href="{{ route('transactions.create', ['category' => $category->id]) }}" class="btn btn-success">
+                    <i class="glyphicon glyphicon-plus"></i>
                 </a>
             </div>
         </div>
         @endforeach
         @endforeach
     </div>
+
 </x-app-layout>
