@@ -18,11 +18,11 @@
                 $prior_month = \Carbon\Carbon::parse($prior_month);
                 $next_month = \Carbon\Carbon::parse($next_month);
                 @endphp
-                <a href="{{ route('dashboard.index', ['month' => $prior_month->format('Y-m')]) }}">
+                <a href="{{ route('dashboard.index', ['month' => $prior_month->format('F')]) }}">
                     <span class="glyphicon glyphicon-chevron-left pull-left"></span>
                 </a>
                 {{ $month }}
-                <a href="{{ route('dashboard.index', ['month' => $next_month->format('Y-m')]) }}">
+                <a href="{{ route('dashboard.index', ['month' => $next_month->format('F')]) }}">
                     <span class="glyphicon glyphicon-chevron-right pull-right"></span>
                 </a>
             </h3>
