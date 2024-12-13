@@ -23,6 +23,9 @@ Route::middleware('auth')->group(function () {
 Route::resource('categories', CategoryController::class)
     ->only(['index', 'store', 'create', 'edit', 'update', 'destroy', 'show'])
     ->middleware(['auth', 'verified']);
+Route::get('/summary', [CategoryController::class, 'summary'])
+    ->middleware(['auth', 'verified'])
+    ->name('summary');
 
 Route::resource('transactions', TransactionController::class)
     ->only(['index', 'store', 'create', 'edit', 'update', 'destroy', 'show'])

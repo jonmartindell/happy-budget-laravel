@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
+    protected $fillable = ['category_id', 'merchant', 'amount', 'date', 'transfer'];
+
     // Define the relationship with User
     public function user()
     {

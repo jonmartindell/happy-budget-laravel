@@ -3,6 +3,10 @@
         .category-rows:nth-child(even) {
             background-color: #f1f1f1;
         }
+
+        main {
+            background-color: white;
+        }
     </style>
 
     <p id="notice">{{ session('notice') }}</p>

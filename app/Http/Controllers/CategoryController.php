@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Transaction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -11,6 +12,14 @@ use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
+    public function summary(): View
+    {
+        return view('summary', [
+            'categories' => Category::all(),
+            'transactions' => Transaction::all()
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      */

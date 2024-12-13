@@ -19,10 +19,10 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
 
             // Other fields
-            $table->string('note')->nullable();
             $table->string('merchant')->nullable();
             $table->decimal('amount', 10, 2); // Specify precision and scale for decimal
             $table->date('date');
+            $table->boolean('transfer');
 
             $table->timestamps();
         });
